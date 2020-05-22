@@ -181,7 +181,6 @@ int main(int argc, char *argv[])
   {
     LaplaceProblem<2> test;
     test.run();
-    break;
   }
   catch (std::exception &exc)
   {
