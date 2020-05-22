@@ -116,7 +116,7 @@ LaplaceProblem<dim>::LaplaceProblem()
 
 
 template <int dim>
-void LaplaceProblem<dim, degree>::setup_system()
+void LaplaceProblem<dim>::setup_system()
 {
 
 }
@@ -124,7 +124,7 @@ void LaplaceProblem<dim, degree>::setup_system()
 
 
 template <int dim>
-void LaplaceProblem<dim, degree>::refine_grid()
+void LaplaceProblem<dim>::refine_grid()
 {
   for (auto cell : shared_tria.active_cell_iterators())
     if (cell->center()[0] < 0 && cell->center()[1] < 0)
@@ -140,7 +140,7 @@ void LaplaceProblem<dim, degree>::refine_grid()
 
 
 template <int dim>
-void LaplaceProblem<dim, degree>::output_results(const unsigned int cycle)
+void LaplaceProblem<dim>::output_results(const unsigned int cycle)
 {
   GridOut grid_out;
   grid_out.write_mesh_per_processor_as_vtu(shared_tria,
@@ -156,7 +156,7 @@ void LaplaceProblem<dim, degree>::output_results(const unsigned int cycle)
 
 
 template <int dim>
-void LaplaceProblem<dim, degree>::run()
+void LaplaceProblem<dim>::run()
 {
   for (unsigned int cycle = 0; cycle < 5; ++cycle)
   {
