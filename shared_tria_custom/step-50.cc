@@ -109,8 +109,11 @@ LaplaceProblem<dim>::LaplaceProblem()
 {
   shared_tria.signals.post_refinement.connect (std::bind(&mypartition<dim>, std::ref(shared_tria)));
 
-  GridGenerator::hyper_cube(triangulation, -1., 1., /*colorize*/ false);
-  triangulation.refine_global(1);
+  GridGenerator::hyper_cube(shared_tria, -1., 1., /*colorize*/ false);
+  shared_tria.refine_global(1);
+
+  GridGenerator::hyper_cube(p4est_tria, -1., 1., /*colorize*/ false);
+  p4est_tria.refine_global(1);
 }
 
 
