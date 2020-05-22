@@ -94,15 +94,14 @@ LaplaceProblem<dim>::LaplaceProblem()
   , shared_tria(mpi_communicator,
                 typename Triangulation<dim>::MeshSmoothing
                 (Triangulation<dim>::limit_level_difference_at_vertices),
-                false,
+                true,
                 typename parallel::shared::Triangulation<dim>::Settings
-                (parallel::shared::Triangulation<dim>::partition_custom_signal |
-                 parallel::shared::Triangulation<dim>::construct_multigrid_hierarchy))
+                (parallel::shared::Triangulation<dim>::partition_custom_signal))
 
   , p4est_tria(mpi_communicator,
                typename Triangulation<dim>::MeshSmoothing
                (Triangulation<dim>::limit_level_difference_at_vertices),
-               false,
+               true,
                typename parallel::shared::Triangulation<dim>::Settings
                (parallel::shared::Triangulation<dim>::partition_zorder |
                 parallel::shared::Triangulation<dim>::construct_multigrid_hierarchy))
