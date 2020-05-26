@@ -58,7 +58,7 @@ void mypartition(parallel::shared::Triangulation<dim> &tria)
 
     const unsigned int cells_per_proc = std::floor((double)n_level_cells/(double)n_subdomains);
     unsigned int current_cells = 0;
-    unsigned int current_proc = 0;
+    int current_proc = 0;
     for (auto cell : tria.active_cell_iterators_on_level(level))
     {
       //if (current_cells < cells_per_proc)
