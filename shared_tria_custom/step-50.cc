@@ -55,7 +55,6 @@ void mypartition(parallel::shared::Triangulation<dim> &tria)
   {
     for (int level=tria.n_global_levels()-1; level>=0; --level)
     {
-      std::cout << "level: " << level << std::endl;
       unsigned int n_level_cells = 0;
       for (auto cell : tria.active_cell_iterators_on_level(level))
       {
@@ -64,6 +63,12 @@ void mypartition(parallel::shared::Triangulation<dim> &tria)
       }
 
       const unsigned int cells_per_proc = std::floor((double)n_level_cells/(double)n_procs);
+
+      std::cout << "level: " << level << ", "
+                << "n_level_cells:  " << n_level_cells << ", "
+                << "cells_per_proc: " << cells_per_proc
+                << std::endl;
+
       unsigned int current_cells = 0;
       int current_proc = 0;
       for (auto cell : tria.active_cell_iterators_on_level(level))
@@ -87,8 +92,7 @@ void mypartition(parallel::shared::Triangulation<dim> &tria)
           }
         }
         std::cout << "curent_proc:    " << current_proc   << ", "
-                  << "curent_cells:   " << current_cells  << ", "
-                  << "cells_per_proc: " << cells_per_proc << std::endl;
+                  << "curent_cells:   " << current_cells  << std::endl;
 
       }
     }
