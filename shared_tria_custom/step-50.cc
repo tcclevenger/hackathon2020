@@ -216,7 +216,7 @@ void LaplaceProblem<dim>::output_results(const unsigned int cycle)
 template <int dim>
 void LaplaceProblem<dim>::run()
 {
-  for (unsigned int cycle = 0; cycle < 2; ++cycle)
+  for (unsigned int cycle = 0; cycle < 3; ++cycle)
   {
     std::cout << "cycle: " << cycle << std::endl;
     if (cycle > 0)
