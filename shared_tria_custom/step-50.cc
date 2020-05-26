@@ -69,7 +69,8 @@ void mypartition(parallel::shared::Triangulation<dim> &tria)
 
       if (current_cells >= cells_per_proc)
       {
-        std::cout << "current_cells: " << current_cells << std::endl;
+        std::cout << "current_cells: " << current_cells
+                  << ", cells_per_proc: " << cells_per_proc << std::endl;
         current_cells = 0;
 
         if (current_proc < n_subdomains-1)
