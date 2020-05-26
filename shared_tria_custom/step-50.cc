@@ -62,9 +62,6 @@ void mypartition(parallel::shared::Triangulation<dim> &tria)
         n_level_cells += 1;
       }
 
-      if (n_level_cells == 0)
-        continue;
-
       const unsigned int cells_per_proc = std::ceil((double)n_level_cells/(double)n_procs);
 
       std::cout << "level: " << level << ", "
