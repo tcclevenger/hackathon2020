@@ -542,6 +542,8 @@ void LaplaceProblem<dim>::run ()
         triangulation.clear();
         generate_mesh(grid_type,n_refinements,n_subdiv);
 
+        pcout << "Active cells: " << triangulation.n_global_active_cells() << std::endl;
+
                 distribute_mesh(4,true);
 
                 GridOut grid_out;
