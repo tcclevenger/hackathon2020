@@ -553,7 +553,8 @@ void LaplaceProblem<dim>::run ()
                                                          "level-mesh"+Utilities::int_to_string(cycle),
                                                          true,
                                                          false);
-                continue;
+        if (true)
+          continue;
 
         if (dim == 2 && triangulation.n_active_cells()/(double)(procs) > 6e5)
           break;
