@@ -61,7 +61,7 @@ void mypartition(parallel::shared::Triangulation<dim> &tria)
     int current_proc = 0;
     for (auto cell : tria.active_cell_iterators_on_level(level))
     {
-      std::cout << current_proc << std::endl;
+      std::cout << "current_proc: " << current_proc << std::endl;
       //if (current_cells < cells_per_proc)
       cell->set_subdomain_id(current_proc);
 
@@ -69,6 +69,7 @@ void mypartition(parallel::shared::Triangulation<dim> &tria)
 
       if (current_cells >= cells_per_proc)
       {
+        std::cout << "current_cells: " << current_cells << std::endl;
         current_cells = 0;
 
         if (current_proc < n_subdomains-1)
