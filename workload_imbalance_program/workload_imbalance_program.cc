@@ -461,6 +461,7 @@ void LaplaceProblem<dim>::ownership_data (unsigned int n_procs)
 
 
   pcout << "Cores: " << n_procs << " "
+        << "Cells: " << triangulation.n_global_active_cells() << " "
         << "Ratio: " << workload_imbalance_ratio << " (" << 1.0/workload_imbalance_ratio <<") "
         << "Comm: " << comm_ratio << " (n: " << children_native << ", f: " << children_foreign << ") "
         << "Max ghost owners: " << max_ghost_owners << std::endl;
@@ -518,7 +519,7 @@ void LaplaceProblem<dim>::run ()
     pcout << "Annulus Refinement " << dim << "D" << std::endl;
     for (unsigned int procs = 16; procs <66000; procs*=2)
     {
-      pcout << "Number of cores: " << procs << std::endl;
+//      pcout << "Number of cores: " << procs << std::endl;
       unsigned int sizes [] = {1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 20, 24, 28, 32, 40, 48, 56, 64, 80, 96, 112, 128};
       unsigned int n_cycles = sizeof(sizes)/sizeof(unsigned int);
       for (unsigned int cycle=0; cycle<n_cycles; ++cycle)
@@ -542,21 +543,21 @@ void LaplaceProblem<dim>::run ()
         triangulation.clear();
         generate_mesh(grid_type,n_refinements,n_subdiv);
 
-        pcout << "Active cells: " << triangulation.n_global_active_cells() << std::endl;
+//        pcout << "Active cells: " << triangulation.n_global_active_cells() << std::endl;
 
-                distribute_mesh(4,true);
+//                distribute_mesh(4,true);
 
-                GridOut grid_out;
-                grid_out.write_mesh_per_processor_as_vtu(triangulation,
-                                                         "active-mesh"+Utilities::int_to_string(cycle),
-                                                         false,
-                                                         false);
-                grid_out.write_mesh_per_processor_as_vtu(triangulation,
-                                                         "level-mesh"+Utilities::int_to_string(cycle),
-                                                         true,
-                                                         false);
-        if (true)
-          continue;
+//                GridOut grid_out;
+//                grid_out.write_mesh_per_processor_as_vtu(triangulation,
+//                                                         "active-mesh"+Utilities::int_to_string(cycle),
+//                                                         false,
+//                                                         false);
+//                grid_out.write_mesh_per_processor_as_vtu(triangulation,
+//                                                         "level-mesh"+Utilities::int_to_string(cycle),
+//                                                         true,
+//                                                         false);
+//        if (true)
+//          continue;
 
         if (dim == 2 && triangulation.n_active_cells()/(double)(procs) > 6e5)
           break;
