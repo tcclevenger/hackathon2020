@@ -66,7 +66,7 @@ private:
   void generate_mesh(std::string grid_type, unsigned int global_refinements = 0, unsigned int n_subdiv = 0);
 
   void ownership_data (unsigned int n_procs);
-  void distribute_mesh(unsigned int n_procs);
+  void distribute_mesh(unsigned int n_procs, bool new_type=false);
 
   MPI_Comm                                  mpi_communicator;
 
@@ -468,31 +468,36 @@ void LaplaceProblem<dim>::ownership_data (unsigned int n_procs)
 
 
 template <int dim>
-void LaplaceProblem<dim>::distribute_mesh (unsigned int n_procs)
+void LaplaceProblem<dim>::distribute_mesh (unsigned int n_procs, bool new_type)
 {
-  //GridTools::partition_triangulation_zorder(n_procs, triangulation);
-
-  for (int level=triangulation.n_global_levels()-1; level>=0; --level)
+  if (!new_type)
   {
-    unsigned int n_level_cells = 0;
-    for (auto cell : triangulation.active_cell_iterators_on_level(level))
+    GridTools::partition_triangulation_zorder(n_procs, triangulation);
+  }
+  else
+  {
+    for (int level=triangulation.n_global_levels()-1; level>=0; --level)
     {
-      (void)cell;
-      n_level_cells += 1;
-    }
-
-    const unsigned int cells_per_proc = std::ceil((double)n_level_cells/(double)n_procs);
-    unsigned int current_cells = 0;
-    int current_proc = 0;
-    for (auto cell : triangulation.active_cell_iterators_on_level(level))
-    {
-      cell->set_subdomain_id(current_proc);
-      current_cells += 1;
-
-      if (current_cells >= cells_per_proc)
+      unsigned int n_level_cells = 0;
+      for (auto cell : triangulation.active_cell_iterators_on_level(level))
       {
-        current_cells = 0;
-        current_proc += 1;
+        (void)cell;
+        n_level_cells += 1;
+      }
+
+      const unsigned int cells_per_proc = std::ceil((double)n_level_cells/(double)n_procs);
+      unsigned int current_cells = 0;
+      int current_proc = 0;
+      for (auto cell : triangulation.active_cell_iterators_on_level(level))
+      {
+        cell->set_subdomain_id(current_proc);
+        current_cells += 1;
+
+        if (current_cells >= cells_per_proc)
+        {
+          current_cells = 0;
+          current_proc += 1;
+        }
       }
     }
   }
@@ -618,20 +623,20 @@ void LaplaceProblem<dim>::run ()
         else
           refine_grid (grid_type);
 
-        distribute_mesh(4);
+//        distribute_mesh(4);
 
-        GridOut grid_out;
-        grid_out.write_mesh_per_processor_as_vtu(triangulation,
-                                                 "active-mesh"+Utilities::int_to_string(cycle),
-                                                 false,
-                                                 false);
-        grid_out.write_mesh_per_processor_as_vtu(triangulation,
-                                                 "level-mesh"+Utilities::int_to_string(cycle),
-                                                 true,
-                                                 false);
+//        GridOut grid_out;
+//        grid_out.write_mesh_per_processor_as_vtu(triangulation,
+//                                                 "active-mesh"+Utilities::int_to_string(cycle),
+//                                                 false,
+//                                                 false);
+//        grid_out.write_mesh_per_processor_as_vtu(triangulation,
+//                                                 "level-mesh"+Utilities::int_to_string(cycle),
+//                                                 true,
+//                                                 false);
 
-        if (cycle > 4)
-          break;
+//        if (cycle > 4)
+//          break;
 
         pcout << "Active cells: " << triangulation.n_global_active_cells() << std::endl;
 
@@ -643,6 +648,10 @@ void LaplaceProblem<dim>::run ()
 
           distribute_mesh(procs);
           ownership_data (procs);
+
+          distribute_mesh(procs,true);
+          ownership_data (procs);
+          pcout << std::endl;
         }
         pcout << std::endl;
       }
