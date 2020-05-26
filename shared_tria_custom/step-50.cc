@@ -136,7 +136,7 @@ private:
   ConditionalOStream pcout;
 
   parallel::shared::Triangulation<dim> shared_tria;
-  parallel::shared::Triangulation<dim> p4est_tria;
+  //parallel::shared::Triangulation<dim> p4est_tria;
 };
 
 
@@ -152,21 +152,21 @@ LaplaceProblem<dim>::LaplaceProblem()
                 typename parallel::shared::Triangulation<dim>::Settings
                 (parallel::shared::Triangulation<dim>::partition_custom_signal))
 
-  , p4est_tria(mpi_communicator,
-               typename Triangulation<dim>::MeshSmoothing
-               (Triangulation<dim>::limit_level_difference_at_vertices),
-               true,
-               typename parallel::shared::Triangulation<dim>::Settings
-               (parallel::shared::Triangulation<dim>::partition_zorder |
-                parallel::shared::Triangulation<dim>::construct_multigrid_hierarchy))
+//  , p4est_tria(mpi_communicator,
+//               typename Triangulation<dim>::MeshSmoothing
+//               (Triangulation<dim>::limit_level_difference_at_vertices),
+//               true,
+//               typename parallel::shared::Triangulation<dim>::Settings
+//               (parallel::shared::Triangulation<dim>::partition_zorder |
+//                parallel::shared::Triangulation<dim>::construct_multigrid_hierarchy))
 {
   shared_tria.signals.post_refinement.connect (std::bind(&mypartition<dim>, std::ref(shared_tria)));
 
   GridGenerator::hyper_cube(shared_tria, -1., 1., /*colorize*/ false);
   shared_tria.refine_global(1);
 
-  GridGenerator::hyper_cube(p4est_tria, -1., 1., /*colorize*/ false);
-  p4est_tria.refine_global(1);
+//  GridGenerator::hyper_cube(p4est_tria, -1., 1., /*colorize*/ false);
+//  p4est_tria.refine_global(1);
 }
 
 
@@ -182,15 +182,18 @@ void LaplaceProblem<dim>::setup_system()
 template <int dim>
 void LaplaceProblem<dim>::refine_grid()
 {
+  shared_tria.refine_global();
+  return;
+
   for (auto cell : shared_tria.active_cell_iterators())
     if (cell->center()[0] < 0 && cell->center()[1] < 0)
       cell->set_refine_flag();
   shared_tria.execute_coarsening_and_refinement();
 
-  for (auto cell : p4est_tria.active_cell_iterators())
-    if (cell->center()[0] < 0 && cell->center()[1] < 0)
-      cell->set_refine_flag();
-  p4est_tria.execute_coarsening_and_refinement();
+//  for (auto cell : p4est_tria.active_cell_iterators())
+//    if (cell->center()[0] < 0 && cell->center()[1] < 0)
+//      cell->set_refine_flag();
+//  p4est_tria.execute_coarsening_and_refinement();
 }
 
 
@@ -203,10 +206,10 @@ void LaplaceProblem<dim>::output_results(const unsigned int cycle)
                                            "shared_tria_active"+Utilities::int_to_string(cycle),
                                            false,
                                            false);
-  grid_out.write_mesh_per_processor_as_vtu(p4est_tria,
-                                           "p4est_tria_active"+Utilities::int_to_string(cycle),
-                                           false,
-                                           false);
+//  grid_out.write_mesh_per_processor_as_vtu(p4est_tria,
+//                                           "p4est_tria_active"+Utilities::int_to_string(cycle),
+//                                           false,
+//                                           false);
 }
 
 
