@@ -212,7 +212,7 @@ void LaplaceProblem<dim>::output_results(const unsigned int cycle)
 template <int dim>
 void LaplaceProblem<dim>::run()
 {
-  for (unsigned int cycle = 0; cycle < 1; ++cycle)
+  for (unsigned int cycle = 0; cycle < 2; ++cycle)
   {
     if (cycle > 0)
       refine_grid();
