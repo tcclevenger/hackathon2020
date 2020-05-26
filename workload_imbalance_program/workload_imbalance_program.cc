@@ -542,6 +542,18 @@ void LaplaceProblem<dim>::run ()
         triangulation.clear();
         generate_mesh(grid_type,n_refinements,n_subdiv);
 
+                distribute_mesh(4);
+
+                GridOut grid_out;
+                grid_out.write_mesh_per_processor_as_vtu(triangulation,
+                                                         "active-mesh"+Utilities::int_to_string(cycle),
+                                                         false,
+                                                         false);
+                grid_out.write_mesh_per_processor_as_vtu(triangulation,
+                                                         "level-mesh"+Utilities::int_to_string(cycle),
+                                                         true,
+                                                         false);
+
         if (dim == 2 && triangulation.n_active_cells()/(double)(procs) > 6e5)
           break;
         if (dim == 3 && triangulation.n_active_cells()/(double)(procs) > 4e5)
@@ -550,6 +562,9 @@ void LaplaceProblem<dim>::run ()
           continue;
 
         distribute_mesh(procs);
+        ownership_data (procs);
+
+        distribute_mesh(procs, true);
         ownership_data (procs);
 
 
@@ -610,18 +625,18 @@ void LaplaceProblem<dim>::run ()
       //        pcout << std::endl;
       //      }
 
-      grid_type = "quadrant-2d";
-      pcout << "Quadrent Refinement " << dim << "D" << std::endl;
-      for (unsigned int cycle=0; cycle<12; ++cycle)
-      {
-        //pcout << "Cycle " << cycle << ':' << std::endl;
-        if (cycle == 0)
-        {
-          triangulation.clear();
-          generate_mesh(grid_type,2);
-        }
-        else
-          refine_grid (grid_type);
+//      grid_type = "quadrant-2d";
+//      pcout << "Quadrent Refinement " << dim << "D" << std::endl;
+//      for (unsigned int cycle=0; cycle<12; ++cycle)
+//      {
+//        //pcout << "Cycle " << cycle << ':' << std::endl;
+//        if (cycle == 0)
+//        {
+//          triangulation.clear();
+//          generate_mesh(grid_type,2);
+//        }
+//        else
+//          refine_grid (grid_type);
 
 //        distribute_mesh(4);
 
@@ -638,23 +653,23 @@ void LaplaceProblem<dim>::run ()
 //        if (cycle > 4)
 //          break;
 
-        pcout << "Active cells: " << triangulation.n_global_active_cells() << std::endl;
+//        pcout << "Active cells: " << triangulation.n_global_active_cells() << std::endl;
 
-        for (unsigned int procs = 16; procs <2e6; procs*=2)
-        {
-          if (triangulation.n_global_active_cells()/procs < 100 ||
-              triangulation.n_global_active_cells()/procs > 500e3)
-            continue;
+//        for (unsigned int procs = 16; procs <2e6; procs*=2)
+//        {
+//          if (triangulation.n_global_active_cells()/procs < 100 ||
+//              triangulation.n_global_active_cells()/procs > 500e3)
+//            continue;
 
-          distribute_mesh(procs);
-          ownership_data (procs);
+//          distribute_mesh(procs);
+//          ownership_data (procs);
 
-          distribute_mesh(procs,true);
-          ownership_data (procs);
-          pcout << std::endl;
-        }
-        pcout << std::endl;
-      }
+//          distribute_mesh(procs,true);
+//          ownership_data (procs);
+//          pcout << std::endl;
+//        }
+//        pcout << std::endl;
+//      }
 
       //      grid_type = "circle-2d";
       //      pcout << "Circle Refinement " << dim << "D" << std::endl;
