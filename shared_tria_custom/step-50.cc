@@ -67,7 +67,7 @@ void mypartition(parallel::shared::Triangulation<dim> &tria)
         else if (i<8)
           j=2;
 
-        cell->set_subdomain_id(j % n_proc);
+        cell->set_subdomain_id(j % n_procs);
         ++cell;
       }
   }
