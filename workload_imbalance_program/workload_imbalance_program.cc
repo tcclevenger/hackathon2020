@@ -472,10 +472,10 @@ void LaplaceProblem<dim>::distribute_mesh (unsigned int n_procs)
 {
   //GridTools::partition_triangulation_zorder(n_procs, triangulation);
 
-  for (int level=tria.n_global_levels()-1; level>=0; --level)
+  for (int level=triangulation.n_global_levels()-1; level>=0; --level)
   {
     unsigned int n_level_cells = 0;
-    for (auto cell : tria.active_cell_iterators_on_level(level))
+    for (auto cell : triangulation.active_cell_iterators_on_level(level))
     {
       (void)cell;
       n_level_cells += 1;
@@ -490,7 +490,7 @@ void LaplaceProblem<dim>::distribute_mesh (unsigned int n_procs)
 
     unsigned int current_cells = 0;
     int current_proc = 0;
-    for (auto cell : tria.active_cell_iterators_on_level(level))
+    for (auto cell : triangulation.active_cell_iterators_on_level(level))
     {
       std::cout << "curent_proc:    " << current_proc   << ", "
                 << "curent_cells:   " << current_cells  << std::endl;
