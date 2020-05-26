@@ -618,6 +618,21 @@ void LaplaceProblem<dim>::run ()
         else
           refine_grid (grid_type);
 
+        distribute_mesh(4);
+
+        GridOut grid_out;
+        grid_out.write_mesh_per_processor_as_vtu(triangulation,
+                                                 "active-mesh"+Utilities::int_to_string(cycle),
+                                                 false,
+                                                 false);
+        grid_out.write_mesh_per_processor_as_vtu(triangulation,
+                                                 "level-mesh"+Utilities::int_to_string(cycle),
+                                                 true,
+                                                 false);
+
+        if (cycle > 4)
+          break;
+
         pcout << "Active cells: " << triangulation.n_global_active_cells() << std::endl;
 
         for (unsigned int procs = 16; procs <2e6; procs*=2)
@@ -632,112 +647,112 @@ void LaplaceProblem<dim>::run ()
         pcout << std::endl;
       }
 
-    //      grid_type = "circle-2d";
-    //      pcout << "Circle Refinement " << dim << "D" << std::endl;
-    //      for (unsigned int procs = 16; procs <33000; procs*=2)
-    //      {
-    //        pcout << "Number of cores: " << procs << std::endl;
-    //        for (unsigned int cycle=0; cycle<14; ++cycle)
-    //        {
-    //          //pcout << "Cycle " << cycle << ':' << std::endl;
-    //          if (cycle == 0)
-    //          {
-    //            triangulation.clear();
-    //            generate_mesh(grid_type,3);
-    //          }
-    //          else
-    //            refine_grid (grid_type);
+      //      grid_type = "circle-2d";
+      //      pcout << "Circle Refinement " << dim << "D" << std::endl;
+      //      for (unsigned int procs = 16; procs <33000; procs*=2)
+      //      {
+      //        pcout << "Number of cores: " << procs << std::endl;
+      //        for (unsigned int cycle=0; cycle<14; ++cycle)
+      //        {
+      //          //pcout << "Cycle " << cycle << ':' << std::endl;
+      //          if (cycle == 0)
+      //          {
+      //            triangulation.clear();
+      //            generate_mesh(grid_type,3);
+      //          }
+      //          else
+      //            refine_grid (grid_type);
 
-    //          if (cycle < 8)
-    //            continue;
-    //          distribute_mesh(procs);
-    //          ownership_data (procs);
-    //        }
-    //        pcout << std::endl;
-    //      }
+      //          if (cycle < 8)
+      //            continue;
+      //          distribute_mesh(procs);
+      //          ownership_data (procs);
+      //        }
+      //        pcout << std::endl;
+      //      }
 
-    //            grid_type = "sine_curve";
-    //            pcout << "Sine Refinement " << dim << "D" << std::endl;
-    //            for (unsigned int cycle=0; cycle<21; ++cycle)
-    //            {
-    //                Timer timer;
-    //                timer.restart();
-    //                if (cycle == 0)
-    //                {
-    //                    triangulation.clear();
-    //                    generate_mesh(grid_type,2);
-    //                }
-    //                else
-    //                    refine_grid (grid_type);
-    //                timer.stop();
-    //                // std::cout << timer.last_cpu_time() << std::endl;
+      //            grid_type = "sine_curve";
+      //            pcout << "Sine Refinement " << dim << "D" << std::endl;
+      //            for (unsigned int cycle=0; cycle<21; ++cycle)
+      //            {
+      //                Timer timer;
+      //                timer.restart();
+      //                if (cycle == 0)
+      //                {
+      //                    triangulation.clear();
+      //                    generate_mesh(grid_type,2);
+      //                }
+      //                else
+      //                    refine_grid (grid_type);
+      //                timer.stop();
+      //                // std::cout << timer.last_cpu_time() << std::endl;
 
-    //                pcout << "Active cells: " << triangulation.n_global_active_cells() << std::endl;
+      //                pcout << "Active cells: " << triangulation.n_global_active_cells() << std::endl;
 
-    //                //                    if (cycle < 15)
-    //                //                        continue;
+      //                //                    if (cycle < 15)
+      //                //                        continue;
 
-    //                for (unsigned int procs = 16; procs <2e6; procs*=2)
-    //                {
-    //                    if (triangulation.n_global_active_cells()/procs < 100 ||
-    //                        triangulation.n_global_active_cells()/procs > 500e3)
-    //                        continue;
+      //                for (unsigned int procs = 16; procs <2e6; procs*=2)
+      //                {
+      //                    if (triangulation.n_global_active_cells()/procs < 100 ||
+      //                        triangulation.n_global_active_cells()/procs > 500e3)
+      //                        continue;
 
-    //                    distribute_mesh(procs);
-    //                    ownership_data (procs);
-    //                }
-    //                pcout << std::endl;
-    //            }
+      //                    distribute_mesh(procs);
+      //                    ownership_data (procs);
+      //                }
+      //                pcout << std::endl;
+      //            }
+      pcout << std::endl << std::endl;
+    }
+    else if (dim==3)
+    {
+      //            grid_type = "sine_curve";
+      //            pcout << "Sine Refinement " << dim << "D" << std::endl;
+      //            for (unsigned int cycle=0; cycle<11; ++cycle)
+      //            {
+      //                Timer timer;
+      //                timer.restart();
+      //                if (cycle == 0)
+      //                {
+      //                    triangulation.clear();
+      //                    generate_mesh(grid_type,1);
+      //                }
+      //                else
+      //                    refine_grid (grid_type);
+      //                timer.stop();
+      //                // std::cout << timer.last_cpu_time() << std::endl;
+
+      //                pcout << "Active cells: " << triangulation.n_global_active_cells() << std::endl;
+
+      //                //                    if (cycle < 15)
+      //                //                        continue;
+
+      //                for (unsigned int procs = 16; procs <33e3; procs*=2)
+      //                {
+      //                    //unsigned int procs = 4;
+      //                    if (triangulation.n_global_active_cells()/procs < 100 ||
+      //                            triangulation.n_global_active_cells()/procs > 500e3)
+      //                        continue;
+
+      //                    distribute_mesh(procs);
+      //                    ownership_data (procs);
+
+      //                    GridOut grid_out;
+      //                    grid_out.write_mesh_per_processor_as_vtu(triangulation,
+      //                                                             "active-mesh"+Utilities::int_to_string(cycle),
+      //                                                             false,
+      //                                                             false);
+      //                    grid_out.write_mesh_per_processor_as_vtu(triangulation,
+      //                                                             "level-mesh"+Utilities::int_to_string(cycle),
+      //                                                             true,
+      //                                                             false);
+      //               }
+      //                pcout << std::endl;
+      //            }
+    }
     pcout << std::endl << std::endl;
   }
-  else if (dim==3)
-  {
-    //            grid_type = "sine_curve";
-    //            pcout << "Sine Refinement " << dim << "D" << std::endl;
-    //            for (unsigned int cycle=0; cycle<11; ++cycle)
-    //            {
-    //                Timer timer;
-    //                timer.restart();
-    //                if (cycle == 0)
-    //                {
-    //                    triangulation.clear();
-    //                    generate_mesh(grid_type,1);
-    //                }
-    //                else
-    //                    refine_grid (grid_type);
-    //                timer.stop();
-    //                // std::cout << timer.last_cpu_time() << std::endl;
-
-    //                pcout << "Active cells: " << triangulation.n_global_active_cells() << std::endl;
-
-    //                //                    if (cycle < 15)
-    //                //                        continue;
-
-    //                for (unsigned int procs = 16; procs <33e3; procs*=2)
-    //                {
-    //                    //unsigned int procs = 4;
-    //                    if (triangulation.n_global_active_cells()/procs < 100 ||
-    //                            triangulation.n_global_active_cells()/procs > 500e3)
-    //                        continue;
-
-    //                    distribute_mesh(procs);
-    //                    ownership_data (procs);
-
-    //                    GridOut grid_out;
-    //                    grid_out.write_mesh_per_processor_as_vtu(triangulation,
-    //                                                             "active-mesh"+Utilities::int_to_string(cycle),
-    //                                                             false,
-    //                                                             false);
-    //                    grid_out.write_mesh_per_processor_as_vtu(triangulation,
-    //                                                             "level-mesh"+Utilities::int_to_string(cycle),
-    //                                                             true,
-    //                                                             false);
-    //               }
-    //                pcout << std::endl;
-    //            }
-  }
-  pcout << std::endl << std::endl;
-}
 }
 }
 
