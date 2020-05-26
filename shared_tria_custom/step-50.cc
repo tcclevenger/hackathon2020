@@ -53,6 +53,8 @@ void mypartition(parallel::shared::Triangulation<dim> &tria)
   }
   else
   {
+    std::cout << "Total active cells: " << tria.n_global_active_cells() << std::endl;
+
     for (int level=tria.n_global_levels()-1; level>=0; --level)
     {
       unsigned int n_level_cells = 0;
