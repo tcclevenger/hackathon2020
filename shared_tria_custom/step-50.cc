@@ -49,7 +49,7 @@ void mypartition(parallel::shared::Triangulation<dim> &tria)
 
   if (false)
   {
-    GridTools::partition_triangulation_zorder(n_subdomains, tria);
+    GridTools::partition_triangulation_zorder(n_procs, tria);
   }
   else
   {
