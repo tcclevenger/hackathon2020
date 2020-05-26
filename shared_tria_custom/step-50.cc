@@ -45,39 +45,44 @@ template <int dim>
 void mypartition(parallel::shared::Triangulation<dim> &tria)
 {
   AssertThrow(Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD) == 1, ExcNotImplemented());
-//  int n_subdomains = Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
+  //  int n_subdomains = Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
 
-  //GridTools::partition_triangulation_zorder(n_subdomains, tria);
-
-  for (int level=tria.n_global_levels()-1; level>=0; --level)
+  if (false)
   {
-    unsigned int n_level_cells = 0;
-    for (auto cell : tria.active_cell_iterators_on_level(level))
+    GridTools::partition_triangulation_zorder(n_subdomains, tria);
+  }
+  else
+  {
+    for (int level=tria.n_global_levels()-1; level>=0; --level)
     {
-      (void)cell;
-      ++n_level_cells;
-    }
-
-    const unsigned int cells_per_proc = std::floor((double)n_level_cells/(double)n_procs);
-    unsigned int current_cells = 0;
-    int current_proc = 0;
-    for (auto cell : tria.active_cell_iterators_on_level(level))
-    {
-      std::cout << "current_proc: " << current_proc << std::endl;
-      //if (current_cells < cells_per_proc)
-      cell->set_subdomain_id(current_proc);
-
-      ++current_cells;
-
-      if (current_cells >= cells_per_proc)
+      unsigned int n_level_cells = 0;
+      for (auto cell : tria.active_cell_iterators_on_level(level))
       {
-        std::cout << "current_cells: " << current_cells
-                  << ", cells_per_proc: " << cells_per_proc << std::endl;
-        current_cells = 0;
-        current_proc += 1;
+        (void)cell;
+        ++n_level_cells;
+      }
 
-//        if (current_proc < n_subdomains-1)
-//          ++current_proc;
+      const unsigned int cells_per_proc = std::floor((double)n_level_cells/(double)n_procs);
+      unsigned int current_cells = 0;
+      int current_proc = 0;
+      for (auto cell : tria.active_cell_iterators_on_level(level))
+      {
+        std::cout << "current_proc: " << current_proc << std::endl;
+        //if (current_cells < cells_per_proc)
+        cell->set_subdomain_id(current_proc);
+
+        ++current_cells;
+
+        if (current_cells >= cells_per_proc)
+        {
+          std::cout << "current_cells: " << current_cells
+                    << ", cells_per_proc: " << cells_per_proc << std::endl;
+          current_cells = 0;
+          current_proc += 1;
+
+          //        if (current_proc < n_subdomains-1)
+          //          ++current_proc;
+        }
       }
     }
   }
