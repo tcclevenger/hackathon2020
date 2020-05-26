@@ -95,9 +95,8 @@ void mypartition(parallel::shared::Triangulation<dim> &tria)
                   << "curent_cells:   " << current_cells  << std::endl;
 
       }
+      std::cout << std::endl;
     }
-
-    std::cout << std::endl;
   }
 
 
@@ -218,10 +217,13 @@ void LaplaceProblem<dim>::run()
 {
   for (unsigned int cycle = 0; cycle < 2; ++cycle)
   {
+    std::cout << "cycle: " << cycle << std::endl;
     if (cycle > 0)
       refine_grid();
 
     output_results(cycle);
+
+    std::cout << std::endl;
   }
 }
 
