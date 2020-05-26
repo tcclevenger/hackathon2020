@@ -81,7 +81,7 @@ void mypartition(parallel::shared::Triangulation<dim> &tria)
             current_cells = 0;
             current_proc += 1;
 
-            if (current_proc < n_subdomains-1)
+            if (current_proc < n_procs-1)
               ++current_proc;
           }
         }
