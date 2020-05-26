@@ -47,7 +47,7 @@ void mypartition(parallel::shared::Triangulation<dim> &tria)
 
   //GridTools::partition_triangulation_zorder(n_subdomains, tria);
 
-  for (unsigned int level=tria.n_global_levels()-1; i>=0; ++i)
+  for (unsigned int level=tria.n_global_levels()-1; level>=0; ++level)
   {
     unsigned int n_level_cells = 0;
     for (auto cell : tria.active_cell_iterators_on_level(level))
