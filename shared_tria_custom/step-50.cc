@@ -58,7 +58,6 @@ void mypartition(parallel::shared::Triangulation<dim> &tria)
       unsigned int n_level_cells = 0;
       for (auto cell : tria.active_cell_iterators_on_level(level))
       {
-        std::cout << "cell indx: " << cell->index() << std::endl;
         (void)cell;
         n_level_cells += 1;
       }
@@ -161,7 +160,7 @@ LaplaceProblem<dim>::LaplaceProblem()
   shared_tria.signals.post_refinement.connect (std::bind(&mypartition<dim>, std::ref(shared_tria)));
 
   GridGenerator::hyper_cube(shared_tria, -1., 1., /*colorize*/ false);
-  shared_tria.refine_global(1);
+  //shared_tria.refine_global(1);
 
 //  GridGenerator::hyper_cube(p4est_tria, -1., 1., /*colorize*/ false);
 //  p4est_tria.refine_global(1);
