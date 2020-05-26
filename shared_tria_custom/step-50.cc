@@ -49,7 +49,6 @@ void mypartition(parallel::shared::Triangulation<dim> &tria)
 
   for (int level=tria.n_global_levels()-1; level>=0; --level)
   {
-    std::cout << level << std::endl;
     unsigned int n_level_cells = 0;
     for (auto cell : tria.active_cell_iterators_on_level(level))
     {
