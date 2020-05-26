@@ -36,6 +36,7 @@
 #include <deal.II/grid/grid_out.h>
 #include <deal.II/grid/grid_tools.h>
 
+unsigned int n_procs = 4;
 
 using namespace dealii;
 
@@ -43,7 +44,8 @@ using namespace dealii;
 template <int dim>
 void mypartition(parallel::shared::Triangulation<dim> &tria)
 {
-  int n_subdomains = Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
+  AssertThrow(Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD) == 1, ExcNotImplemented());
+//  int n_subdomains = Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
 
   //GridTools::partition_triangulation_zorder(n_subdomains, tria);
 
@@ -56,7 +58,7 @@ void mypartition(parallel::shared::Triangulation<dim> &tria)
       ++n_level_cells;
     }
 
-    const unsigned int cells_per_proc = std::floor((double)n_level_cells/(double)n_subdomains);
+    const unsigned int cells_per_proc = std::floor((double)n_level_cells/(double)n_procs);
     unsigned int current_cells = 0;
     int current_proc = 0;
     for (auto cell : tria.active_cell_iterators_on_level(level))
