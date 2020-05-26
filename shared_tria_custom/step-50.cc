@@ -56,32 +56,24 @@ void mypartition(parallel::shared::Triangulation<dim> &tria)
   }
   else
   {
-    typename parallel::shared::Triangulation<dim>::cell_iterator
-    cell = tria.begin_active(),
-    endc = tria.end();
-    for (; cell!=endc; ++cell)
-      cell->set_subdomain_id(5);
+    typename Triangulation<dim>::active_cell_iterator
+    cell = tria.begin_active();
+    for (unsigned int i=0; i < tria.n_active_cells(); ++i)
+      {
+        unsigned int j=0;
+        if (i<4)
+          j=1;
+        else if (i<8)
+          j=2;
+
+        cell->set_subdomain_id(j % nproc);
+        ++cell;
+      }
   }
 
 
 
   GridTools::partition_multigrid_levels(tria);
-
-
-  /*unsigned int n_my_cells = 0;
-    typename parallel::shared::Triangulation<dim>::cell_iterator
-    cell = tria.begin(),
-    endc = tria.end();
-    for (; cell!=endc; ++cell)
-      if (cell->is_locally_owned_on_level())
-        n_my_cells += 1;
-
-    unsigned int total_cells;
-    int ierr = MPI_Allreduce (&n_my_cells, &total_cells, 1, MPI_UNSIGNED, MPI_SUM, MPI_COMM_WORLD);
-    AssertThrowMPI(ierr);
-
-    Assert(total_cells == tria.n_cells(),
-           ExcMessage("After my_partion: Not all cells are assigned to a processor."))*/
 }
 
 
