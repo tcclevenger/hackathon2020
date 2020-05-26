@@ -56,48 +56,11 @@ void mypartition(parallel::shared::Triangulation<dim> &tria)
   }
   else
   {
-    std::cout << "Total active cells: " << tria.n_global_active_cells() << std::endl;
-
-    for (int level=tria.n_global_levels()-1; level>=0; --level)
-    {
-      unsigned int n_level_cells = 0;
-      for (auto cell : tria.active_cell_iterators_on_level(level))
-      {
-        (void)cell;
-        n_level_cells += 1;
-      }
-
-      const unsigned int cells_per_proc = std::ceil((double)n_level_cells/(double)n_procs);
-
-      std::cout << "level: " << level << ", "
-                << "n_level_cells:  " << n_level_cells << ", "
-                << "cells_per_proc: " << cells_per_proc
-                << std::endl;
-
-      unsigned int current_cells = 0;
-      int current_proc = 0;
-      for (auto cell : tria.active_cell_iterators_on_level(level))
-      {
-        std::cout << "curent_proc:    " << current_proc   << ", "
-                  << "curent_cells:   " << current_cells  << std::endl;
-
-        cell->set_subdomain_id(current_proc);
-        current_cells += 1;
-
-        if (current_cells >= cells_per_proc)
-        {
-          //            std::cout << "current_cells: " << current_cells
-          //                      << ", cells_per_proc: " << cells_per_proc << std::endl;
-          current_cells = 0;
-          current_proc += 1;
-
-          //            if (current_proc < n_procs-1)
-          //              ++current_proc;
-        }
-
-      }
-      std::cout << std::endl;
-    }
+    typename parallel::shared::Triangulation<dim>::cell_iterator
+    cell = tria.begin_active(),
+    endc = tria.end();
+    for (; cell!=endc; ++cell)
+      cell->set_subdomain_id(5);
   }
 
 
@@ -154,21 +117,21 @@ LaplaceProblem<dim>::LaplaceProblem()
                 typename parallel::shared::Triangulation<dim>::Settings
                 (parallel::shared::Triangulation<dim>::partition_custom_signal))
 
-//  , p4est_tria(mpi_communicator,
-//               typename Triangulation<dim>::MeshSmoothing
-//               (Triangulation<dim>::limit_level_difference_at_vertices),
-//               true,
-//               typename parallel::shared::Triangulation<dim>::Settings
-//               (parallel::shared::Triangulation<dim>::partition_zorder |
-//                parallel::shared::Triangulation<dim>::construct_multigrid_hierarchy))
+  //  , p4est_tria(mpi_communicator,
+  //               typename Triangulation<dim>::MeshSmoothing
+  //               (Triangulation<dim>::limit_level_difference_at_vertices),
+  //               true,
+  //               typename parallel::shared::Triangulation<dim>::Settings
+  //               (parallel::shared::Triangulation<dim>::partition_zorder |
+  //                parallel::shared::Triangulation<dim>::construct_multigrid_hierarchy))
 {
   shared_tria.signals.post_refinement.connect (std::bind(&mypartition<dim>, std::ref(shared_tria)));
 
   GridGenerator::hyper_cube(shared_tria, -1., 1., /*colorize*/ false);
   //shared_tria.refine_global(1);
 
-//  GridGenerator::hyper_cube(p4est_tria, -1., 1., /*colorize*/ false);
-//  p4est_tria.refine_global(1);
+  //  GridGenerator::hyper_cube(p4est_tria, -1., 1., /*colorize*/ false);
+  //  p4est_tria.refine_global(1);
 }
 
 
@@ -192,10 +155,10 @@ void LaplaceProblem<dim>::refine_grid()
       cell->set_refine_flag();
   shared_tria.execute_coarsening_and_refinement();
 
-//  for (auto cell : p4est_tria.active_cell_iterators())
-//    if (cell->center()[0] < 0 && cell->center()[1] < 0)
-//      cell->set_refine_flag();
-//  p4est_tria.execute_coarsening_and_refinement();
+  //  for (auto cell : p4est_tria.active_cell_iterators())
+  //    if (cell->center()[0] < 0 && cell->center()[1] < 0)
+  //      cell->set_refine_flag();
+  //  p4est_tria.execute_coarsening_and_refinement();
 }
 
 
@@ -208,10 +171,10 @@ void LaplaceProblem<dim>::output_results(const unsigned int cycle)
                                            "shared_tria_active"+Utilities::int_to_string(cycle),
                                            false,
                                            false);
-//  grid_out.write_mesh_per_processor_as_vtu(p4est_tria,
-//                                           "p4est_tria_active"+Utilities::int_to_string(cycle),
-//                                           false,
-//                                           false);
+  //  grid_out.write_mesh_per_processor_as_vtu(p4est_tria,
+  //                                           "p4est_tria_active"+Utilities::int_to_string(cycle),
+  //                                           false,
+  //                                           false);
 }
 
 
