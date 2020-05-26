@@ -36,7 +36,6 @@
 #include <deal.II/grid/grid_out.h>
 #include <deal.II/grid/grid_tools.h>
 
-int n_procs = 4;
 
 using namespace dealii;
 
@@ -44,6 +43,8 @@ using namespace dealii;
 template <int dim>
 void mypartition(parallel::shared::Triangulation<dim> &tria)
 {
+  int n_procs = 4;
+
   AssertThrow(Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD) == 1, ExcNotImplemented());
   //  int n_subdomains = Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
 
@@ -66,12 +67,10 @@ void mypartition(parallel::shared::Triangulation<dim> &tria)
         else if (i<8)
           j=2;
 
-        cell->set_subdomain_id(j % nproc);
+        cell->set_subdomain_id(j % n_proc);
         ++cell;
       }
   }
-
-
 
   GridTools::partition_multigrid_levels(tria);
 }
