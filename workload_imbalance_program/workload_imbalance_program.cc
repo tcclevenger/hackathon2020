@@ -643,7 +643,7 @@ void LaplaceProblem<dim>::run ()
         else
           refine_grid (grid_type);
 
-        distribute_mesh(4);
+        distribute_mesh(4,true);
 
         GridOut grid_out;
         grid_out.write_mesh_per_processor_as_vtu(triangulation,
