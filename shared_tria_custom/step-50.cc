@@ -47,6 +47,9 @@ void mypartition(parallel::shared::Triangulation<dim> &tria)
   AssertThrow(Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD) == 1, ExcNotImplemented());
   //  int n_subdomains = Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
 
+  for (auto cell : tria.active_cell_iterators())
+    cell->set_subdomain_id(3);
+
   if (false)
   {
     GridTools::partition_triangulation_zorder(n_procs, tria);
