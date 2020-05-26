@@ -45,7 +45,39 @@ void mypartition(parallel::shared::Triangulation<dim> &tria)
 {
   int n_subdomains = Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
 
-  GridTools::partition_triangulation_zorder(n_subdomains, tria);
+  //GridTools::partition_triangulation_zorder(n_subdomains, tria);
+
+  for (unsigned int level=tria.n_global_levels()-1; i>=0; ++i)
+  {
+    const unsigned int n_level_cells = 0;
+    for (auto cell : tria.active_cell_iterators_on_level(level))
+    {
+      (void)cell;
+      ++n_level_cells;
+    }
+
+    const unsigned int cells_per_proc = std::floor((double)n_level_cells/(double)n_subdomains);
+    unsigned int current_cells = 0;
+    unsigned int current_proc = 0;
+    for (auto cell : tria.active_cell_iterators_on_level(level))
+    {
+      //if (current_cells < cells_per_proc)
+        cell->set_subdomain_id(current_proc);
+
+      ++current_cells;
+
+      if (current_cells >= cells_per_proc)
+      {
+        current_cells = 0;
+
+        if (current_proc < n_subdomains-1)
+          ++current_proc;
+      }
+    }
+  }
+
+
+
   GridTools::partition_multigrid_levels(tria);
 
 
