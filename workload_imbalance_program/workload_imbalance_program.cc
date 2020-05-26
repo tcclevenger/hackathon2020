@@ -542,7 +542,7 @@ void LaplaceProblem<dim>::run ()
         triangulation.clear();
         generate_mesh(grid_type,n_refinements,n_subdiv);
 
-                distribute_mesh(4);
+                distribute_mesh(4,true);
 
                 GridOut grid_out;
                 grid_out.write_mesh_per_processor_as_vtu(triangulation,
@@ -553,6 +553,7 @@ void LaplaceProblem<dim>::run ()
                                                          "level-mesh"+Utilities::int_to_string(cycle),
                                                          true,
                                                          false);
+                continue;
 
         if (dim == 2 && triangulation.n_active_cells()/(double)(procs) > 6e5)
           break;
